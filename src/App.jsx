@@ -2,11 +2,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./components/Pages/Dashboard";
-// import Notes from "./components/pages/Notes";
 import Register from "./components/Pages/Register"
 import Login from "./components/Pages/Login";
 import Eleves from "./components/Pages/Eleves";
-
+import Notes from "./components/Pages/Notes";
+import ElevesParClasse from "./components/Pages/Eleves_classe"
 export default function App() {
   return (
     <BrowserRouter>
@@ -25,9 +25,10 @@ export default function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
        <Route path="/gestion-eleves" element={<Eleves />} />
-<Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* <Route path="/notes/:eleveId" element={<Notes />} /> */}
+        <Route path="saisir-notes" element={<Notes />} /> 
+          <Route path="/eleves-par-classe" element={<ElevesParClasse />} /> 
       </Routes>
     </BrowserRouter>
   );

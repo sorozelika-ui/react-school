@@ -30,14 +30,18 @@ function InputField({ icon: Icon, label, required, type = "text", value, onChang
   const [focus, setFocus] = useState(false);
   return (
     <div style={{ marginBottom: "1rem" }}>
-      <label style={{ display: "block", fontSize: "0.73rem", fontWeight: 700, color: CI.muted, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+      <label style={{ display: "block", fontSize: "0.73rem", fontWeight: 700, color: CI.muted, marginBottom: 6, 
+        textTransform: "uppercase", letterSpacing: "0.5px" }}>
         {label} {required && <span style={{ color: "#e53e3e" }}>*</span>}
       </label>
       <div style={{ position: "relative" }}>
-        <Icon size={14} color={focus ? CI.orange : CI.muted} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", transition: "color 0.2s" }} />
+        <Icon size={14} color={focus ? CI.orange : CI.muted} style={{ position: "absolute", left: 12, top: "50%", 
+            transform: "translateY(-50%)", pointerEvents: "none", transition: "color 0.2s" }} />
         <input type={type} value={value} onChange={onChange} placeholder={placeholder}
           onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
-          style={{ width: "100%", background: focus ? "#fff" : "#F8F9FC", border: `1.5px solid ${focus ? CI.orange : "rgba(0,0,0,0.10)"}`, color: CI.dark, padding: "10px 12px 10px 38px", borderRadius: 9, fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", outline: "none", boxSizing: "border-box", transition: "all 0.2s", boxShadow: focus ? `0 0 0 3px ${CI.orange}15` : "none" }}
+          style={{ width: "100%", background: focus ? "#fff" : "#F8F9FC", border: `1.5px solid ${focus ? CI.orange : "rgba(0,0,0,0.10)"}`,
+           color: CI.dark, padding: "10px 12px 10px 38px", borderRadius: 9, fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", 
+           outline: "none", boxSizing: "border-box", transition: "all 0.2s", boxShadow: focus ? `0 0 0 3px ${CI.orange}15` : "none" }}
         />
       </div>
     </div>
@@ -57,8 +61,7 @@ function SelectField({ icon: Icon, label, required, value, onChange, options, pl
           style={{ width: "100%", background: focus ? "#fff" : "#F8F9FC", border: `1.5px solid ${focus ? CI.orange : "rgba(0,0,0,0.10)"}`, color: value ? CI.dark : CI.muted, padding: "10px 12px 10px 38px", borderRadius: 9, fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", outline: "none", appearance: "none", cursor: "pointer", boxSizing: "border-box", transition: "all 0.2s", boxShadow: focus ? `0 0 0 3px ${CI.orange}15` : "none" }}
         >
           <option value="">{placeholder}</option>
-          {/* ✅ CORRIGÉ : libelle au lieu de nom */}
-          {options.map(o => <option key={o.id} value={o.id}>{o.libelle}</option>)}
+          {options.map(o => <option key={o.id} value={o.id}>{o.nom}</option>)}
         </select>
       </div>
     </div>
@@ -90,8 +93,7 @@ export default function Eleves() {
     try {
       setLoading(true);
       const res = await api.get("/eleves");
-      // ✅ CORRIGÉ : gère les deux formats de réponse
-      setEleves(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setEleves(res.data);
     } catch { toast.error("Impossible de charger les élèves."); }
     finally { setLoading(false); }
   }
@@ -99,8 +101,7 @@ export default function Eleves() {
   async function fetchClasses() {
     try {
       const res = await api.get("/classes");
-      // ✅ CORRIGÉ : gère les deux formats de réponse
-      setClasses(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setClasses(res.data);
     } catch { toast.error("Impossible de charger les classes."); }
   }
 
@@ -170,6 +171,7 @@ export default function Eleves() {
     finally { setDeleting(false); }
   }
 
+  // Filtrage + pagination
   const elevesFiltres = eleves.filter(e => {
     const s = search.toLowerCase();
     const matchSearch = !search || e.nom?.toLowerCase().includes(s) || e.prenom?.toLowerCase().includes(s) || e.matricule?.toLowerCase().includes(s);
@@ -180,14 +182,14 @@ export default function Eleves() {
   const totalPages = Math.ceil(elevesFiltres.length / PER_PAGE);
   const elevesPagines = elevesFiltres.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  // ✅ CORRIGÉ : libelle au lieu de nom
   function getClasseNom(classe_id) {
-    return classes.find(c => String(c.id) === String(classe_id))?.libelle || "—";
+    return classes.find(c => c.id === classe_id)?.nom || "—";
   }
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: CI.bg, minHeight: "100vh", color: CI.text }}>
-      
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
       {/* HEADER */}
       <header style={{ background: "#fff", borderBottom: `1px solid ${CI.border}`, padding: "0 2rem", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.05)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -257,8 +259,7 @@ export default function Eleves() {
               style={{ width: "100%", background: "#fff", border: `1px solid ${CI.border}`, color: CI.dark, padding: "10px 12px 10px 36px", borderRadius: 10, fontFamily: "'DM Sans', sans-serif", fontSize: "0.88rem", outline: "none", appearance: "none", cursor: "pointer", boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}
             >
               <option value="">Toutes les classes</option>
-              {/* ✅ CORRIGÉ : libelle au lieu de nom */}
-              {classes.map(c => <option key={c.id} value={c.id}>{c.libelle}</option>)}
+              {classes.map(c => <option key={c.id} value={c.id}>{c.nom}</option>)}
             </select>
           </div>
         </motion.div>
@@ -267,6 +268,7 @@ export default function Eleves() {
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
           style={{ background: "#fff", borderRadius: 20, border: `1px solid ${CI.border}`, boxShadow: "0 2px 12px rgba(0,0,0,0.05)", overflow: "hidden" }}
         >
+          {/* Bande drapeau */}
           <div style={{ height: 4, background: `linear-gradient(90deg, ${CI.orange} 33%, #fff 33%, #fff 66%, ${CI.vert} 66%)` }} />
 
           {loading ? (
@@ -309,6 +311,7 @@ export default function Eleves() {
                         onMouseEnter={e => e.currentTarget.style.background = "#FAFBFF"}
                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                       >
+                        {/* Élève */}
                         <td style={{ padding: "12px 16px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                             <div style={{ width: 38, height: 38, borderRadius: "50%", background: `linear-gradient(135deg, ${color}, ${color}bb)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "0.85rem", fontWeight: 900, color: "#fff", flexShrink: 0 }}>
@@ -321,31 +324,38 @@ export default function Eleves() {
                             </div>
                           </div>
                         </td>
+                        {/* Matricule */}
                         <td style={{ padding: "12px 16px" }}>
                           <span style={{ background: `${color}15`, color, borderRadius: 6, padding: "3px 10px", fontSize: "0.75rem", fontWeight: 700, whiteSpace: "nowrap" }}>
                             {eleve.matricule}
                           </span>
                         </td>
-                        {/* ✅ CORRIGÉ : libelle au lieu de nom pour la classe */}
+                        {/* Classe */}
                         <td style={{ padding: "12px 16px" }}>
                           <span style={{ background: CI.orangeLight, color: CI.orange, borderRadius: 6, padding: "3px 10px", fontSize: "0.75rem", fontWeight: 700, whiteSpace: "nowrap" }}>
-                            {eleve.classe?.libelle || getClasseNom(eleve.classe_id)}
+                            {eleve.classe?.nom || getClasseNom(eleve.classe_id)}
                           </span>
                         </td>
+                        {/* Date naissance */}
                         <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: CI.muted, whiteSpace: "nowrap" }}>
                           {eleve.date_naissance ? new Date(eleve.date_naissance).toLocaleDateString("fr-FR") : "—"}
                         </td>
+                        {/* Contact */}
                         <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: CI.text, whiteSpace: "nowrap" }}>
                           {eleve.contact || <span style={{ color: CI.muted }}>—</span>}
                         </td>
+                        {/* Email */}
                         <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: CI.text, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {eleve.email || <span style={{ color: CI.muted }}>—</span>}
                         </td>
+                        {/* Quartier */}
                         <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: CI.text, whiteSpace: "nowrap" }}>
                           {eleve.quartier || <span style={{ color: CI.muted }}>—</span>}
                         </td>
+                        {/* ACTIONS */}
                         <td style={{ padding: "12px 16px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            {/* Voir */}
                             <motion.button whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.9 }}
                               onClick={() => toast(`Dossier de ${eleve.prenom} ${eleve.nom}`)}
                               title="Voir le dossier"
@@ -353,6 +363,7 @@ export default function Eleves() {
                             >
                               <Eye size={15} />
                             </motion.button>
+                            {/* Modifier */}
                             <motion.button whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.9 }}
                               onClick={() => ouvrirEdit(eleve)}
                               title="Modifier"
@@ -360,6 +371,7 @@ export default function Eleves() {
                             >
                               <Pencil size={15} />
                             </motion.button>
+                            {/* Supprimer */}
                             <motion.button whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.9 }}
                               onClick={() => setDeleteId(eleve.id)}
                               title="Supprimer"
@@ -417,6 +429,7 @@ export default function Eleves() {
             <motion.div initial={{ opacity: 0, scale: 0.92, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 30 }}
               style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.18)" }}
             >
+              {/* Header modal */}
               <div style={{ padding: "1.4rem 1.8rem", borderBottom: `1px solid ${CI.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
                 <div>
                   <div style={{ height: 3, width: 36, background: `linear-gradient(90deg, ${CI.orange}, ${CI.vert})`, borderRadius: 2, marginBottom: 8 }} />
@@ -435,6 +448,7 @@ export default function Eleves() {
               </div>
 
               <form onSubmit={handleSubmit} style={{ padding: "1.4rem 1.8rem" }}>
+                {/* Matricule */}
                 {!modeEdit && (
                   <div style={{ marginBottom: "1rem" }}>
                     <label style={{ display: "block", fontSize: "0.73rem", fontWeight: 700, color: CI.muted, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>
@@ -461,7 +475,6 @@ export default function Eleves() {
                   <InputField icon={User} label="Prénom" required value={form.prenom} onChange={e => handleChange("prenom", e.target.value)} placeholder="Prénom(s)" />
                 </div>
                 <InputField icon={Calendar} label="Date de naissance" required type="date" value={form.date_naissance} onChange={e => handleChange("date_naissance", e.target.value)} placeholder="" />
-                {/* ✅ SelectField utilise maintenant libelle via le composant corrigé en haut */}
                 <SelectField icon={School} label="Classe" required value={form.classe_id} onChange={e => handleChange("classe_id", e.target.value)} options={classes} placeholder="Choisir une classe" />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 0.8rem" }}>
                   <InputField icon={Phone} label="Contact" type="tel" value={form.contact} onChange={e => handleChange("contact", e.target.value)} placeholder="+225 07 00 00 00" />

@@ -40,8 +40,8 @@ export default function Login() {
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#0a0f1e", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
+      
+      
       <div style={{ position: "fixed", top: -200, right: -200, width: 500, height: 500, background: "radial-gradient(circle, rgba(244,168,64,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "fixed", bottom: -200, left: -200, width: 400, height: 400, background: "radial-gradient(circle, rgba(46,204,138,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
 

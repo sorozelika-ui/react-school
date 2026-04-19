@@ -7,6 +7,9 @@ import Login from "./components/Pages/Login";
 import Eleves from "./components/Pages/Eleves";
 import Notes from "./components/Pages/Notes";
 import ElevesParClasse from "./components/Pages/Eleves_classe"
+import Professeurs from "./components/Pages/Professeurs"
+import Bulletin from "./components/Pages/Bulletin"
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -29,6 +32,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="saisir-notes" element={<Notes />} /> 
           <Route path="/eleves-par-classe" element={<ElevesParClasse />} /> 
+          <Route path="/gestion-profs" element={<Professeurs />} /> 
+           <Route path="/bulletins-trim" element={<Bulletin />} /> 
       </Routes>
     </BrowserRouter>
   );
